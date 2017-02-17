@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--<properties resource="db.properties"/>-->
+
+    <!--<environments default="development">-->
+        <!--<environment id="development">-->
+            <!--&lt;!&ndash; 配置JDBC事务管理&ndash;&gt;-->
+            <!--<transactionManager type="JDBC"/>-->
+            <!--&lt;!&ndash; 配置数据源&ndash;&gt;-->
+            <!--<dataSource type="POOLED">-->
+                <!--<property name="driver" value="${mysql.driver.class}"/>-->
+                <!--<property name="url" value="${mysql.url}"/>-->
+                <!--<property name="username" value="${mysql.user}"/>-->
+                <!--<property name="password" value="${mysql.password}"/>-->
+            <!--</dataSource>-->
+        <!--</environment>-->
+    <!--</environments>-->
+
+    <!--注: MyBatis按照如下顺序加载properties:
+1) 在<properties>标签内定义的属性;
+2) .properties文件中定义的属性;
+3) 最后读取作为方法参数传递的属性. -->
+
+    <!--<environments default="development">-->
+        <!--<environment id="development">-->
+            <!--&lt;!&ndash; 配置JDBC事务管理&ndash;&gt;-->
+            <!--<transactionManager type="JDBC"/>-->
+            <!--&lt;!&ndash; 配置数据源&ndash;&gt;-->
+            <!--<dataSource type="POOLED">-->
+                <!--<property name="driver" value="com.mysql.jdbc.Driver"/>-->
+                <!--<property name="url" value="jdbc:mysql://localhost:3306/test?characterEncoding=utf-8"/>-->
+                <!--<property name="username" value="root"/>-->
+                <!--<property name="password" value="123456"/>-->
+            <!--</dataSource>-->
+        <!--</environment>-->
+    <!--</environments>-->
+    <!--二级缓存 cacheEnabled对此配置文件下的所有cache进行全局性开/关设置(默认为true).-->
+    <settings>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+    <!-- 加载mapper映射文件 -->
+
+    <mappers>
+
+        <!-- http://www.mybatis.org/mybatis-3/zh/configuration.html-->
+        <mapper resource="mybatis/mapper/UserDAOMapper.xml"/>
+    </mappers>
+</configuration>

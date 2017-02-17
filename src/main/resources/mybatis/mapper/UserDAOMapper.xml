@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aires.mybatis.dao.UserDAOWithMapper">
+    <!--注意: 此时namespace必须与UserDAO接口的全限定名相同. -->
+    <!--<cache eviction="LRU" flushInterval="60000" size="512" readOnly="true"/>-->
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache" eviction="LRU" flushInterval="60000" size="1024"
+           readOnly="true"/>
+
+    <select id="selectUserById" parameterType="java.lang.Integer" resultType="com.aires.mybatis.po.User">
+        SELECT * FROM user WHERE id = #{id};
+    </select>
+
+    <update id="updateUserById">
+        UPDATE user SET name = #{name}, password = #{password} WHERE id = #{id};
+    </update>
+
+    <select id="selectUserByName" parameterType="com.aires.mybatis.po.User" resultType="com.aires.mybatis.po.User">
+        SELECT *
+        FROM user
+        WHERE name = #{name};
+    </select>
+
+    <select id="selectUserByMap" parameterType="java.util.Map" resultType="com.aires.mybatis.po.User">
+        SELECT *
+        FROM user
+        WHERE name = #{name} AND password = #{password};
+    </select>
+
+
+    <resultMap id="userMap" type="com.aires.mybatis.po.User">
+        <id column="user_id" property="id"/>
+        <result column="user_name" property="name"/>
+        <result column="user_password" property="password"/>
+    </resultMap>
+
+    <select id="selectUserMapByName" parameterType="java.lang.String" resultMap="userMap">
+        SELECT
+        id       user_id,
+        name     user_name,
+        password user_password
+        FROM user
+        WHERE name = #{name};
+    </select>
+
+
+
+    <!--<select id="selectUser" resultType="com.aires.mybatis.po.User" parameterType="com.aires.mybatis.po.User">-->
+        <!--SELECT * FROM user-->
+        <!--<where>-->
+            <!--<if test="id != null">-->
+                <!--AND id = #{id}-->
+            <!--</if>-->
+            <!--<if test="name != null">-->
+                <!--AND name = #{name}-->
+            <!--</if>-->
+            <!--<if test="password != null">-->
+                <!--AND password = #{password}-->
+            <!--</if>-->
+        <!--</where>-->
+    <!--</select>-->
+
+    <select id="selectUser" resultType="com.aires.mybatis.po.User" parameterType="com.aires.mybatis.po.User">
+        SELECT * FROM user
+        <where>
+            <choose>
+                <when test="id != null">
+                    AND id = #{id}
+                </when>
+                <when test="name != null">
+                    AND name = #{name}
+                </when>
+                <otherwise>
+                    AND password = #{password}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+</mapper>
+
+
+    <!--mapper映射开发方法需要遵循以下规范:
+
+    mapper文件中的namespace与DAO接口的全限定名相同;
+    mapper文件中的Statement的id与DAO接口方法名相同;
+    mapper文件中的Statement的parameterType/resultType与DAO方法的入参/回参类型相同.
+
+
+
+  mapper映射文件(如UserDAO.xml)主要作用是定义SQL语句(每个SQL是一个Statement),是MyBatis的核心.
+
+  MyBatis官方推荐使用mapper映射的方法来开发DAO,因此我们以后就不再过多介绍原始DAO的开发.
+     -->
