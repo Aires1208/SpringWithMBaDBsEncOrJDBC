@@ -3,6 +3,7 @@ package com.aires.databasesource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
@@ -54,6 +55,39 @@ public class ConnectionManger {
         return dataSource;
     }
 
+    public static DataSource getDataSourceDBCP(String file) {
+        if (dataSource == null) {
+            synchronized (ConnectionManger.class) {
+                if (dataSource == null) {
+                    Properties config = SQLUtil.loadConfig(file);
+
+                        BasicDataSource source = new BasicDataSource ();
+                        source.setDriverClassName(config.getProperty("mysql.driver.class"));
+                        source.setUrl(config.getProperty("mysql.url"));
+                        source.setUsername(config.getProperty("mysql.user"));
+                        source.setPassword(config.getProperty("mysql.password"));
+
+                        // 设置连接池最大连接数
+                        source.setMaxIdle(Integer.valueOf(config.getProperty("pool.max.size")));
+                        // 设置连接池最小连接数
+                        source.setMaxIdle(Integer.valueOf(config.getProperty("pool.min.size")));
+                        // 设置连接池初始连接数
+                        source.setInitialSize(Integer.valueOf(config.getProperty("pool.init.size")));
+                        // 设置连接每次增量
+//                        source.set(Integer.valueOf(config.getProperty("pool.acquire.increment")));
+                        // 设置连接池的缓存Statement的最大数
+                        source.setMaxOpenPreparedStatements(Integer.valueOf(config.getProperty("pool.max.statements")));
+                        // 设置最大空闲时间
+//                        source.set(Integer.valueOf(config.getProperty("pool.max.idle_time")));
+
+                        dataSource = source;
+
+                }
+            }
+        }
+        return dataSource;
+    }
+
     public static DataSource getDataSourceHikari(String file) {
         if (dataSource == null) {
             synchronized (ConnectionManger.class) {
@@ -89,6 +123,10 @@ public class ConnectionManger {
     /*获取 Hikari Connection*/
     public static Connection getConnectionHikari(String file) {
         return getConnection(getDataSourceHikari(file));
+    }
+    /*获取 DBCP Connection*/
+    public static Connection getConnectionDBCP(String file) {
+        return getConnection(getDataSourceDBCP(file));
     }
 
     public static Connection getConnection(DataSource dataSource) {

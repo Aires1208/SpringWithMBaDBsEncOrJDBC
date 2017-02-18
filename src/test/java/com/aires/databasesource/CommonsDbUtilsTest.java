@@ -23,9 +23,9 @@ public class CommonsDbUtilsTest {
     * */
     @Test
     public void update() throws SQLException {
-        QueryRunner runner = new QueryRunner(ConnectionManger.getDataSourceHikari("common.properties"));
+        QueryRunner runner = new QueryRunner(ConnectionManger.getDataSourceDBCP("common.properties"));
         String sql = "INSERT INTO city(id,name, province) VALUES(?,?, ?)";
-        runner.update(sql,100, "BJ", "001");
+        runner.update(sql,1000, "BJ", "001");
     }
 
     /*
